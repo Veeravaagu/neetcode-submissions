@@ -1,40 +1,45 @@
 class Solution:
-    def __init__(self):
-        self.root = TrieNode()
-    def addWord(self, words: List[str]):
-        for char in words:
-            curr = self.root
-            for c in char:
-                if c not in curr.children:
-                    curr.children[c] = TrieNode()
-                curr = curr.children[c]
-            curr.word = True
     def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
-        self.addWord(words)
-        ROWS = len(board)
-        COLS = len(board[0])
-        res, visited = set(), set()
-        def dfs(r, c, curr, char):
+        root = TrieNode()
+        for w in words:
+            root.addWord(w)
+        ROWS, COLS = len(board), len(board[0])
+        res, visit = set(), set()
+        def dfs(r, c, root, word):
             if (r < 0 or c < 0 or r == ROWS or c == COLS
-                or (r, c) in visited or board[r][c] not in curr.children):
-
+                or (r, c) in visit or board[r][c] not in root.children):
 
                 return
-            visited.add((r, c))
-            curr = curr.children[board[r][c]]
-            char += board[r][c]
-            if curr.word:
-                res.add(char)
-            dfs(r + 1, c, curr, char)
-            dfs(r - 1, c, curr, char)
-            dfs(r, c + 1, curr, char)
-            dfs(r, c - 1, curr, char)
-            visited.remove((r, c))
+            visit.add((r, c))
+            root = root.children[board[r][c]]
+            word += board[r][c]
+            if root.endWord:
+                res.add(word)
+            
+            dfs(r + 1, c, root, word)
+            dfs(r - 1, c, root, word)
+            dfs(r, c + 1, root, word)
+            dfs(r, c - 1, root, word)
+            visit.remove((r, c))
+            return
         for r in range(ROWS):
             for c in range(COLS):
-                dfs(r, c, self.root, "")
+                dfs(r, c, root, "")
         return list(res)
+        
+                
+
 class TrieNode:
     def __init__(self):
         self.children = {}
-        self.word = False
+        self.endWord = False
+    def addWord(self, word):
+        curr = self
+        for c in word:
+            if c not in curr.children:
+                curr.children[c] = TrieNode()
+            curr = curr.children[c]
+        curr.endWord = True
+            
+
+        
