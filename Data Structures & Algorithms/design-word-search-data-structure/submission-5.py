@@ -10,6 +10,7 @@ class WordDictionary:
                 curr.children[c] = TrieNode()
             curr = curr.children[c]
         curr.word = True
+
     def search(self, word: str) -> bool:
         def dfs(index, root):
             curr = root
@@ -26,8 +27,8 @@ class WordDictionary:
                     curr = curr.children[c]
             return curr.word
         return dfs(0, self.root)
-            
+                    
 class TrieNode:
     def __init__(self):
         self.children = {}
-        self.word = False     
+        self.word = False
